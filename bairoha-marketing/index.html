@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -310,10 +312,10 @@
                         <form id="contactForm" data-sb-form-api-token="API_TOKEN">
                             <!-- Name input-->
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check1" name="option1" value="something">
+                                <input class="form-check-input" type="checkbox" id="jenis1" name="option1" value="seller">
                                 <label class="form-check-label">I am selling product or services</label><br>
 
-                                <input class="form-check-input" type="checkbox" id="check2" name="option2" value="something">
+                                <input class="form-check-input" type="checkbox" id="jenis2" name="option2" value="influencer">
                                 <label class="form-check-label">I am an influencer or content creator</label>
                             </div> 
 
@@ -345,24 +347,11 @@
                                 <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                             </div> -->
                             <!-- Submit success message-->
-                            <!---->
-                            <!-- This is what your users will see when the form-->
-                            <!-- has successfully submitted-->
-                            <div class="d-none" id="submitSuccessMessage">
-                                <div class="text-center mb-3">
-                                    <div class="fw-bolder">Form submission successful!</div>
-                                    To activate this form, sign up at
-                                    <br />
-                                    <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                                </div>
-                            </div>
-                            <!-- Submit error message-->
-                            <!---->
-                            <!-- This is what your users will see when there is-->
+                           
                             <!-- an error submitting the form-->
-                            <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+<!--                             <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div> -->
                             <!-- Submit Button-->
-                            <div class="d-grid"><button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">Submit</button></div>
+                            <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit" onclick="submit_form()">Submit</button></div>
                         </form>
                     </div>
                 </div>
@@ -383,6 +372,52 @@
         <!-- * *                               SB Forms JS                               * *-->
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script>
+
+            function submit_form(){
+                let jenis = '';
+
+                jenis1 = $('#jenis1').is(':checked');
+                if (jenis1 == true){
+                    jenis = jenis + 'seller';
+                }
+                jenis2 = $('#jenis2').is(':checked');
+                if (jenis2 == true){
+                    jenis = jenis + 'influencer';
+                }
+
+                email = $("#email").val();
+                phone = $("#phone").val();
+                // console.log(jenis);
+                // console.log(email);
+                // console.log(phone);
+
+                $.post("http://103.169.90.96:82/api/submit-adsbo",
+                    {
+                        jenis: `${jenis}`,
+                        email: `${email}`,
+                        phone: `${phone}`,
+                    },
+                function(data, status){
+                    // console.log("Data: " + data + "\nStatus: " + status);
+                    if (data == 'OK'){
+                        Swal.fire(
+                        'Sent!',
+                        'Thank You! we hope to see you again',
+                        'success'
+                        )
+                    }else{
+                        Swal.fire(
+                        'Sent Error!',
+                        'Please try again',
+                        'error'
+                        )
+                    }
+                });
+
+            }
+
+            
+        </script>
     </body>
 </html>
